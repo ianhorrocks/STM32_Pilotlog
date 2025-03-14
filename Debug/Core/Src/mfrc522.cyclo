@@ -1,0 +1,17 @@
+../Core/Src/mfrc522.c:4:9:MFRC522_Rd	3
+../Core/Src/mfrc522.c:31:6:MFRC522_Wr	3
+../Core/Src/mfrc522.c:56:13:MFRC522_Clear_Bit	1
+../Core/Src/mfrc522.c:63:13:MFRC522_Set_Bit	1
+../Core/Src/mfrc522.c:70:6:MFRC522_Reset	1
+../Core/Src/mfrc522.c:82:6:MFRC522_AntennaOn	1
+../Core/Src/mfrc522.c:90:6:MFRC522_AntennaOff	1
+../Core/Src/mfrc522.c:95:6:MFRC522_Init	1
+../Core/Src/mfrc522.c:112:9:MFRC522_ToCard	16
+../Core/Src/mfrc522.c:202:9:MFRC522_Request	3
+../Core/Src/mfrc522.c:216:6:MFRC522_CRC	4
+../Core/Src/mfrc522.c:237:9:MFRC522_SelectTag	4
+../Core/Src/mfrc522.c:264:6:MFRC522_Halt	1
+../Core/Src/mfrc522.c:276:9:MFRC522_AntiColl	4
+../Core/Src/mfrc522.c:301:9:MFRC522_IsCard	2
+../Core/Src/mfrc522.c:309:9:MFRC522_ReadCardSerial	2
+../Core/Src/mfrc522.c:320:9:MFRC522_Compare_UID	3
