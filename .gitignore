@@ -1,0 +1,15 @@
+# Archivos de CubeIDE
+*.launch
+*.log
+*.bak
+*.tmp
+*.swp
+*.swo
+*.swn
+
+# Archivos de compilación
+/Debug/
+/Release/
+/build/
+/out/
+/obj/
