@@ -64,7 +64,7 @@ uint8_t TagType;
 char buf_tx[50];
 //uint8_t existingUID[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08}; // Sustituye esto por tu ID existente
 char time_str[20];
-
+char date_str[20];
 uint32_t record_id = 1;
 
 ds1307_dev_t my_rtc;
@@ -82,16 +82,22 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void DisplayTime(const char* time_str) {
+void DisplayTime() {
+    ds1307_update(&my_rtc);
+    sprintf(date_str, "%02d/%02d/%02d", my_rtc.date, my_rtc.month, my_rtc.year % 100);
+    sprintf(time_str, "%02d:%02d:%02d", my_rtc.hours, my_rtc.minutes, my_rtc.seconds);
+    char date_time_str[30];
+    sprintf(date_time_str, "%s %s", date_str, time_str);
     SSD1306_GotoXY(5, 1);
-    SSD1306_Puts(time_str, &Font_7x10, WHITE);
-    SSD1306_UpdateScreen();
+    SSD1306_Puts("                  ", &Font_7x10, BLACK);  // Borra solo la línea de texto
+    SSD1306_GotoXY(5, 1);
+    SSD1306_Puts(date_time_str, &Font_7x10, WHITE);
 }
 
+
 void DisplayIdle() {
-    ds1307_update(&my_rtc);
-    sprintf(time_str, "%02d:%02d:%02d", my_rtc.hours, my_rtc.minutes, my_rtc.seconds);
-    DisplayTime(time_str); // Muestra el tiempo en la pantalla OLED
+	ds1307_update(&my_rtc);
+	DisplayTime();
     SSD1306_GotoXY(0, 25);
     SSD1306_Puts("ESCANEAR ", &Font_11x18, WHITE);
     SSD1306_UpdateScreen();
@@ -117,8 +123,7 @@ void DisplayUser(const uint8_t* UID, const char* tiempo_inicial) {
 
 void Display2Case(const char* tiempo_inicial) {
 	 ds1307_update(&my_rtc);
-	 sprintf(time_str, "%02d:%02d:%02d", my_rtc.hours, my_rtc.minutes, my_rtc.seconds);
-	 DisplayTime(time_str);
+	 DisplayTime();
 	 SSD1306_GotoXY(5, 20);
 	 SSD1306_Puts("Inicial:", &Font_7x10, WHITE);
 	 SSD1306_GotoXY(65, 20);
@@ -234,7 +239,7 @@ int main(void)
   ds1307_init();
 
 
-  ds1307_config(20, 44, 23, SUNDAY, 5, JAN, 2025, +3, 00);
+  ds1307_config(50, 23, 1, Lun, 18, Marzo, 2025, +3, 00);
 
   // Montar el sistema de archivos
   f_mount(&fs, "", 0);

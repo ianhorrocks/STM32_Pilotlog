@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "fonts.h": "c",
+        "ds1307.h": "c"
+    }
+}

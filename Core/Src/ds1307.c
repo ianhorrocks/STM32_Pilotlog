@@ -5,7 +5,7 @@
  * @file	ds1307.c
  * @version 0.1.0
  * @date	2021
- * @author 	Noel Dominguez.
+ * @author 	Ian Horrocks.
  */
 
 

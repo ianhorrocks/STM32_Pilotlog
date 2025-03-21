@@ -12,33 +12,34 @@
 
 #include "i2c.h"
 //#include "DBG.h"
+#include <stdint.h>
 
 
 typedef enum {
+    Lun = 1,
+    Mar,
+    Mie,
+    Jue,
+    Vie,
+    Sab,
+    Dom
+} ds1307_days_t;
 
-	MONDAY = 1,
-	TUESDAY,
-	WEDNESDAY,
-	THURSDAY,
-	FRIDAY,
-	SATURDAY,
-	SUNDAY
-}ds1307_days_t;
+typedef enum {
+    Enero = 1,
+    Febrero,
+    Marzo,
+    Abril,
+    Mayo,
+    Junio,
+    Julio,
+    Agosto,
+    Septiembre,
+    Octubre,
+    Noviembre,
+    Diciembre
+} ds1307_months_t;
 
-typedef enum{
-	JAN = 1,
-	FEBRUARY,
-	MARCH,
-	APRIL,
-	MAY,
-	JUNE,
-	JULY,
-	AUGUST,
-	SEPTEMBER,
-	OCTOBER,
-	NOVEMBER,
-	DECEMBER
-}ds1307_months_t;
 
 typedef enum{
 	DS1307_OK,
