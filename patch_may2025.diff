@@ -1,0 +1,328 @@
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mnew file mode 100644[m
+[1mindex 0000000..ed7e4ed[m
+[1m--- /dev/null[m
+[1m+++ b/.gitignore[m
+[36m@@ -0,0 +1,15 @@[m
+[32m+[m[32m# Archivos de CubeIDE[m
+[32m+[m[32m*.launch[m
+[32m+[m[32m*.log[m
+[32m+[m[32m*.bak[m
+[32m+[m[32m*.tmp[m
+[32m+[m[32m*.swp[m
+[32m+[m[32m*.swo[m
+[32m+[m[32m*.swn[m
+[32m+[m
+[32m+[m[32m# Archivos de compilación[m
+[32m+[m[32m/Debug/[m
+[32m+[m[32m/Release/[m
+[32m+[m[32m/build/[m
+[32m+[m[32m/out/[m
+[32m+[m[32m/obj/[m
+\ No newline at end of file[m
+[1mdiff --git a/.settings/language.settings.xml b/.settings/language.settings.xml[m
+[1mindex e7405b3..f2e3324 100644[m
+[1m--- a/.settings/language.settings.xml[m
+[1m+++ b/.settings/language.settings.xml[m
+[36m@@ -5,7 +5,7 @@[m
+ 			<provider copy-of="extension" id="org.eclipse.cdt.ui.UserLanguageSettingsProvider"/>[m
+ 			<provider-reference id="org.eclipse.cdt.core.ReferencedProjectsLanguageSettingsProvider" ref="shared-provider"/>[m
+ 			<provider-reference id="org.eclipse.cdt.managedbuilder.core.MBSLanguageSettingsProvider" ref="shared-provider"/>[m
+[31m-			<provider class="com.st.stm32cube.ide.mcu.toolchain.armnone.setup.CrossBuiltinSpecsDetector" console="false" env-hash="-1082828701063927462" id="com.st.stm32cube.ide.mcu.toolchain.armnone.setup.CrossBuiltinSpecsDetector" keep-relative-paths="false" name="MCU ARM GCC Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} -E -P -v -dD &quot;${INPUTS}&quot;" prefer-non-shared="true">[m
+[32m+[m			[32m<provider class="com.st.stm32cube.ide.mcu.toolchain.armnone.setup.CrossBuiltinSpecsDetector" console="false" env-hash="-1682035614440089301" id="com.st.stm32cube.ide.mcu.toolchain.armnone.setup.CrossBuiltinSpecsDetector" keep-relative-paths="false" name="MCU ARM GCC Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} -E -P -v -dD &quot;${INPUTS}&quot;" prefer-non-shared="true">[m
+ 				<language-scope id="org.eclipse.cdt.core.gcc"/>[m
+ 				<language-scope id="org.eclipse.cdt.core.g++"/>[m
+ 			</provider>[m
+[36m@@ -16,7 +16,7 @@[m
+ 			<provider copy-of="extension" id="org.eclipse.cdt.ui.UserLanguageSettingsProvider"/>[m
+ 			<provider-reference id="org.eclipse.cdt.core.ReferencedProjectsLanguageSettingsProvider" ref="shared-provider"/>[m
+ 			<provider-reference id="org.eclipse.cdt.managedbuilder.core.MBSLanguageSettingsProvider" ref="shared-provider"/>[m
+[31m-			<provider class="com.st.stm32cube.ide.mcu.toolchain.armnone.setup.CrossBuiltinSpecsDetector" console="false" env-hash="-1082828701063927462" id="com.st.stm32cube.ide.mcu.toolchain.armnone.setup.CrossBuiltinSpecsDetector" keep-relative-paths="false" name="MCU ARM GCC Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} -E -P -v -dD &quot;${INPUTS}&quot;" prefer-non-shared="true">[m
+[32m+[m			[32m<provider class="com.st.stm32cube.ide.mcu.toolchain.armnone.setup.CrossBuiltinSpecsDetector" console="false" env-hash="-1682035614440089301" id="com.st.stm32cube.ide.mcu.toolchain.armnone.setup.CrossBuiltinSpecsDetector" keep-relative-paths="false" name="MCU ARM GCC Built-in Compiler Settings" parameter="${COMMAND} ${FLAGS} -E -P -v -dD &quot;${INPUTS}&quot;" prefer-non-shared="true">[m
+ 				<language-scope id="org.eclipse.cdt.core.gcc"/>[m
+ 				<language-scope id="org.eclipse.cdt.core.g++"/>[m
+ 			</provider>[m
+[1mdiff --git a/.vscode/c_cpp_properties.json b/.vscode/c_cpp_properties.json[m
+[1mnew file mode 100644[m
+[1mindex 0000000..4bc957a[m
+[1m--- /dev/null[m
+[1m+++ b/.vscode/c_cpp_properties.json[m
+[36m@@ -0,0 +1,21 @@[m
+[32m+[m[32m{[m
+[32m+[m[32m    "configurations": [[m
+[32m+[m[32m        {[m
+[32m+[m[32m            "name": "STM32",[m
+[32m+[m[32m            "includePath": [[m
+[32m+[m[32m                "${workspaceFolder}/**",[m
+[32m+[m[32m                "C:/ST/STM32CubeIDE_1.13.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.win32_1.1.0.202305231506/tools/arm-none-eabi/include",[m
+[32m+[m[32m                "C:/ST/STM32CubeIDE_1.13.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.win32_1.1.0.202305231506/tools/arm-none-eabi/include",[m
+[32m+[m[32m                "C:/Users/ianho/Desktop/TODO 2024/Facu/EMBEBIDOS/OLED_Test3/Core/Inc",[m
+[32m+[m[32m                "C:/Users/ianho/Desktop/TODO 2024/Facu/EMBEBIDOS/OLED_Test3/Drivers/STM32F1xx_HAL_Driver/Inc",[m
+[32m+[m[32m                "C:/Users/ianho/Desktop/TODO 2024/Facu/EMBEBIDOS/OLED_Test3/Drivers/CMSIS/Include"[m
+[32m+[m[32m            ],[m
+[32m+[m[32m            "defines": [],[m
+[32m+[m[32m            "compilerPath": "C:/ST/STM32CubeIDE_1.13.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.11.3.rel1.win32_1.1.0.202305231506/tools/bin/arm-none-eabi-gcc.exe",[m
+[32m+[m[32m            "cStandard": "gnu11",[m
+[32m+[m[32m            "cppStandard": "gnu++14",[m
+[32m+[m[32m            "intelliSenseMode": "gcc-arm"[m
+[32m+[m[32m        }[m
+[32m+[m[32m    ],[m
+[32m+[m[32m    "version": 4[m
+[32m+[m[32m}[m
+[1mdiff --git a/.vscode/settings.json b/.vscode/settings.json[m
+[1mnew file mode 100644[m
+[1mindex 0000000..895d8a3[m
+[1m--- /dev/null[m
+[1m+++ b/.vscode/settings.json[m
+[36m@@ -0,0 +1,6 @@[m
+[32m+[m[32m{[m
+[32m+[m[32m    "files.associations": {[m
+[32m+[m[32m        "fonts.h": "c",[m
+[32m+[m[32m        "ds1307.h": "c"[m
+[32m+[m[32m    }[m
+[32m+[m[32m}[m
+\ No newline at end of file[m
+[1mdiff --git a/Core/Inc/ds1307.h b/Core/Inc/ds1307.h[m
+[1mindex 073173f..f2d0c1c 100644[m
+[1m--- a/Core/Inc/ds1307.h[m
+[1m+++ b/Core/Inc/ds1307.h[m
+[36m@@ -12,33 +12,34 @@[m
+ [m
+ #include "i2c.h"[m
+ //#include "DBG.h"[m
+[32m+[m[32m#include <stdint.h>[m
+ [m
+ [m
+ typedef enum {[m
+[32m+[m[32m    Lun = 1,[m
+[32m+[m[32m    Mar,[m
+[32m+[m[32m    Mie,[m
+[32m+[m[32m    Jue,[m
+[32m+[m[32m    Vie,[m
+[32m+[m[32m    Sab,[m
+[32m+[m[32m    Dom[m
+[32m+[m[32m} ds1307_days_t;[m
+ [m
+[31m-	MONDAY = 1,[m
+[31m-	TUESDAY,[m
+[31m-	WEDNESDAY,[m
+[31m-	THURSDAY,[m
+[31m-	FRIDAY,[m
+[31m-	SATURDAY,[m
+[31m-	SUNDAY[m
+[31m-}ds1307_days_t;[m
+[32m+[m[32mtypedef enum {[m
+[32m+[m[32m    Enero = 1,[m
+[32m+[m[32m    Febrero,[m
+[32m+[m[32m    Marzo,[m
+[32m+[m[32m    Abril,[m
+[32m+[m[32m    Mayo,[m
+[32m+[m[32m    Junio,[m
+[32m+[m[32m    Julio,[m
+[32m+[m[32m    Agosto,[m
+[32m+[m[32m    Septiembre,[m
+[32m+[m[32m    Octubre,[m
+[32m+[m[32m    Noviembre,[m
+[32m+[m[32m    Diciembre[m
+[32m+[m[32m} ds1307_months_t;[m
+ [m
+[31m-typedef enum{[m
+[31m-	JAN = 1,[m
+[31m-	FEBRUARY,[m
+[31m-	MARCH,[m
+[31m-	APRIL,[m
+[31m-	MAY,[m
+[31m-	JUNE,[m
+[31m-	JULY,[m
+[31m-	AUGUST,[m
+[31m-	SEPTEMBER,[m
+[31m-	OCTOBER,[m
+[31m-	NOVEMBER,[m
+[31m-	DECEMBER[m
+[31m-}ds1307_months_t;[m
+ [m
+ typedef enum{[m
+ 	DS1307_OK,[m
+[1mdiff --git a/Core/Src/ds1307.c b/Core/Src/ds1307.c[m
+[1mindex 22be96a..d01216a 100644[m
+[1m--- a/Core/Src/ds1307.c[m
+[1m+++ b/Core/Src/ds1307.c[m
+[36m@@ -5,7 +5,7 @@[m
+  * @file	ds1307.c[m
+  * @version 0.1.0[m
+  * @date	2021[m
+[31m- * @author 	Noel Dominguez.[m
+[32m+[m[32m * @author 	Ian Horrocks.[m
+  */[m
+ [m
+ [m
+[1mdiff --git a/Core/Src/main.c b/Core/Src/main.c[m
+[1mindex 1c249da..93abc6f 100644[m
+[1m--- a/Core/Src/main.c[m
+[1m+++ b/Core/Src/main.c[m
+[36m@@ -64,7 +64,7 @@[m [muint8_t TagType;[m
+ char buf_tx[50];[m
+ //uint8_t existingUID[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08}; // Sustituye esto por tu ID existente[m
+ char time_str[20];[m
+[31m-[m
+[32m+[m[32mchar date_str[20];[m
+ uint32_t record_id = 1;[m
+ [m
+ ds1307_dev_t my_rtc;[m
+[36m@@ -82,16 +82,22 @@[m [mvoid SystemClock_Config(void);[m
+ [m
+ /* Private user code ---------------------------------------------------------*/[m
+ /* USER CODE BEGIN 0 */[m
+[31m-void DisplayTime(const char* time_str) {[m
+[32m+[m[32mvoid DisplayTime() {[m
+[32m+[m[32m    ds1307_update(&my_rtc);[m
+[32m+[m[32m    sprintf(date_str, "%02d/%02d/%02d", my_rtc.date, my_rtc.month, my_rtc.year % 100);[m
+[32m+[m[32m    sprintf(time_str, "%02d:%02d:%02d", my_rtc.hours, my_rtc.minutes, my_rtc.seconds);[m
+[32m+[m[32m    char date_time_str[30];[m
+[32m+[m[32m    sprintf(date_time_str, "%s %s", date_str, time_str);[m
+     SSD1306_GotoXY(5, 1);[m
+[31m-    SSD1306_Puts(time_str, &Font_7x10, WHITE);[m
+[31m-    SSD1306_UpdateScreen();[m
+[32m+[m[32m    SSD1306_Puts("                  ", &Font_7x10, BLACK);  // Borra solo la línea de texto[m
+[32m+[m[32m    SSD1306_GotoXY(5, 1);[m
+[32m+[m[32m    SSD1306_Puts(date_time_str, &Font_7x10, WHITE);[m
+ }[m
+ [m
+[32m+[m
+ void DisplayIdle() {[m
+[31m-    ds1307_update(&my_rtc);[m
+[31m-    sprintf(time_str, "%02d:%02d:%02d", my_rtc.hours, my_rtc.minutes, my_rtc.seconds);[m
+[31m-    DisplayTime(time_str); // Muestra el tiempo en la pantalla OLED[m
+[32m+[m	[32mds1307_update(&my_rtc);[m
+[32m+[m	[32mDisplayTime();[m
+     SSD1306_GotoXY(0, 25);[m
+     SSD1306_Puts("ESCANEAR ", &Font_11x18, WHITE);[m
+     SSD1306_UpdateScreen();[m
+[36m@@ -117,8 +123,7 @@[m [mvoid DisplayUser(const uint8_t* UID, const char* tiempo_inicial) {[m
+ [m
+ void Display2Case(const char* tiempo_inicial) {[m
+ 	 ds1307_update(&my_rtc);[m
+[31m-	 sprintf(time_str, "%02d:%02d:%02d", my_rtc.hours, my_rtc.minutes, my_rtc.seconds);[m
+[31m-	 DisplayTime(time_str);[m
+[32m+[m	[32m DisplayTime();[m
+ 	 SSD1306_GotoXY(5, 20);[m
+ 	 SSD1306_Puts("Inicial:", &Font_7x10, WHITE);[m
+ 	 SSD1306_GotoXY(65, 20);[m
+[36m@@ -234,7 +239,7 @@[m [mint main(void)[m
+   ds1307_init();[m
+ [m
+ [m
+[31m-  ds1307_config(20, 44, 23, SUNDAY, 5, JAN, 2025, +3, 00);[m
+[32m+[m[32m  ds1307_config(50, 23, 1, Lun, 18, Marzo, 2025, +3, 00);[m
+ [m
+   // Montar el sistema de archivos[m
+   f_mount(&fs, "", 0);[m
+[1mdiff --git a/Debug/Core/Src/ds1307.o b/Debug/Core/Src/ds1307.o[m
+[1mindex 9f2ba71..0007629 100644[m
+Binary files a/Debug/Core/Src/ds1307.o and b/Debug/Core/Src/ds1307.o differ
+[1mdiff --git a/Debug/Core/Src/main.cyclo b/Debug/Core/Src/main.cyclo[m
+[1mindex dea1fde..aa2c2f6 100644[m
+[1m--- a/Debug/Core/Src/main.cyclo[m
+[1m+++ b/Debug/Core/Src/main.cyclo[m
+[36m@@ -1,11 +1,11 @@[m
+ ../Core/Src/main.c:85:6:DisplayTime	1[m
+[31m-../Core/Src/main.c:91:6:DisplayIdle	1[m
+[31m-../Core/Src/main.c:100:6:DisplayUser	1[m
+[31m-../Core/Src/main.c:118:6:Display2Case	1[m
+[31m-../Core/Src/main.c:136:6:Display2Case2	1[m
+[31m-../Core/Src/main.c:151:6:DisplayMessage	1[m
+[31m-../Core/Src/main.c:160:5:CompareUID	3[m
+[31m-../Core/Src/main.c:169:6:CalculateTimeDifference	3[m
+[31m-../Core/Src/main.c:203:5:main	8[m
+[31m-../Core/Src/main.c:301:6:SystemClock_Config	3[m
+[31m-../Core/Src/main.c:344:6:Error_Handler	1[m
+[32m+[m[32m../Core/Src/main.c:98:6:DisplayIdle	1[m
+[32m+[m[32m../Core/Src/main.c:106:6:DisplayUser	1[m
+[32m+[m[32m../Core/Src/main.c:124:6:Display2Case	1[m
+[32m+[m[32m../Core/Src/main.c:141:6:Display2Case2	1[m
+[32m+[m[32m../Core/Src/main.c:156:6:DisplayMessage	1[m
+[32m+[m[32m../Core/Src/main.c:165:5:CompareUID	3[m
+[32m+[m[32m../Core/Src/main.c:174:6:CalculateTimeDifference	3[m
+[32m+[m[32m../Core/Src/main.c:208:5:main	8[m
+[32m+[m[32m../Core/Src/main.c:306:6:SystemClock_Config	3[m
+[32m+[m[32m../Core/Src/main.c:349:6:Error_Handler	1[m
+[1mdiff --git a/Debug/Core/Src/main.o b/Debug/Core/Src/main.o[m
+[1mindex 08c347e..e80103d 100644[m
+Binary files a/Debug/Core/Src/main.o and b/Debug/Core/Src/main.o differ
+[1mdiff --git a/Debug/Core/Src/main.su b/Debug/Core/Src/main.su[m
+[1mindex 917b73f..a77ee49 100644[m
+[1m--- a/Debug/Core/Src/main.su[m
+[1m+++ b/Debug/Core/Src/main.su[m
+[36m@@ -1,11 +1,11 @@[m
+[31m-../Core/Src/main.c:85:6:DisplayTime	16	static[m
+[31m-../Core/Src/main.c:91:6:DisplayIdle	16	static[m
+[31m-../Core/Src/main.c:100:6:DisplayUser	24	static[m
+[31m-../Core/Src/main.c:118:6:Display2Case	24	static[m
+[31m-../Core/Src/main.c:136:6:Display2Case2	24	static[m
+[31m-../Core/Src/main.c:151:6:DisplayMessage	16	static[m
+[31m-../Core/Src/main.c:160:5:CompareUID	24	static[m
+[31m-../Core/Src/main.c:169:6:CalculateTimeDifference	64	static[m
+[31m-../Core/Src/main.c:203:5:main	104	static[m
+[31m-../Core/Src/main.c:301:6:SystemClock_Config	72	static[m
+[31m-../Core/Src/main.c:344:6:Error_Handler	4	static,ignoring_inline_asm[m
+[32m+[m[32m../Core/Src/main.c:85:6:DisplayTime	56	static[m
+[32m+[m[32m../Core/Src/main.c:98:6:DisplayIdle	8	static[m
+[32m+[m[32m../Core/Src/main.c:106:6:DisplayUser	24	static[m
+[32m+[m[32m../Core/Src/main.c:124:6:Display2Case	24	static[m
+[32m+[m[32m../Core/Src/main.c:141:6:Display2Case2	24	static[m
+[32m+[m[32m../Core/Src/main.c:156:6:DisplayMessage	16	static[m
+[32m+[m[32m../Core/Src/main.c:165:5:CompareUID	24	static[m
+[32m+[m[32m../Core/Src/main.c:174:6:CalculateTimeDifference	64	static[m
+[32m+[m[32m../Core/Src/main.c:208:5:main	104	static[m
+[32m+[m[32m../Core/Src/main.c:306:6:SystemClock_Config	72	static[m
+[32m+[m[32m../Core/Src/main.c:349:6:Error_Handler	4	static,ignoring_inline_asm[m
+[1mdiff --git a/Debug/OLED_Test3.elf b/Debug/OLED_Test3.elf[m
+[1mindex 328110a..359c43b 100644[m
+Binary files a/Debug/OLED_Test3.elf and b/Debug/OLED_Test3.elf differ
+[1mdiff --git a/Debug/OLED_Test3.list b/Debug/OLED_Test3.list[m
+[1mindex bb5b26d..d29f937 100644[m
+[1m--- a/Debug/OLED_Test3.list[m
+[1m+++ b/Debug/OLED_Test3.list[m
+[36m@@ -5,47 +5,47 @@[m [mSections:[m
+ Idx Name          Size      VMA       LMA       File off  Algn[m
+   0 .isr_vector   0000010c  08000000  08000000  00010000  2**0[m
+                   CONTENTS, ALLOC, LOAD, READONLY, DATA[m
+[31m-  1 .text         0000a1b8  0800010c  0800010c  0001010c  2**2[m
+[32m+[m[32m  1 .text         0000a1f4  0800010c  0800010c  0001010c  2**2[m
+                   CONTENTS, ALLOC, LOAD, READONLY, CODE[m
+[31m-  2 .rodata       00001ce0  0800a2c4  0800a2c4  0001a2c4  2**2[m
+[32m+[m[32m  2 .rodata       00001d0c  0800a300  0800a300  0001a300  2**2[m
+                   CONTENTS, ALLOC, LOAD, READONLY, DATA[m
+[31m-  3 .ARM.extab    00000000  0800bfa4  0800bfa4  00020088  2**0[m
+[32m+[m[32m  3 .ARM.extab    00000000  0800c00c  0800c00c  00020088  2**0[m
+                   CONTENTS[m
+[31m-  4 .ARM          00000000  0800bfa4  0800bfa4  00020088  2**0[m
+[32m+[m[32m  4 .ARM          00000000  0800c00c  0800c00c  00020088  2**0[m
+                   CONTENTS[m
+[31m-  5 .preinit_array 00000000  0800bfa4  0800bfa4  00020088  2**0[m
+[32m+[m[32m  5 .preinit_array 00000000  0800c00c  0800c00c  00020088  2**0[m
+                   CONTENTS, ALLOC, LOAD, DATA[m
+[31m-  6 .init_array   00000004  0800bfa4  0800bfa4  0001bfa4  2**2[m
+[32m+[m[32m  6 .init_array   00000004  0800c00c  0800c00c  0001c00c  2**2[m
+                   CONTENTS, ALLOC, LOAD, DATA[m
+[31m-  7 .fini_array   00000004  0800bfa8  0800bfa8  0001bfa8  2**2[m
+[32m+[m[32m  7 .fini_array   00000004  0800c010  0800c010  0001c010  2**2[m
+                   CONTENTS, ALLOC, LOAD, DATA[m
+[31m-  8 .data         00000088  20000000  0800bfac  00020000  2**2[m
+[32m+[m[32m  8 .data         00000088  20000000  0800c014  00020000  2**2[m
+                   CONTENTS, ALLOC, LOAD, DATA[m
+[31m-  9 .bss          00002970  20000088  0800c034  00020088  2**2[m
+[32m+[m[32m  9 .bss          00002984  20000088  0800c09c  00020088  2**2[m
+                   ALLOC[m
+[31m- 10 ._user_heap_stack 00000600  200029f8  0800c034  000229f8  2**0[m
+[32m+[m[32m 10 ._user_heap_stack 00000604  20002a0c  0800c09c  00022a0c  2**0[m
+                   ALLOC[m
+  11 .ARM.attributes 00000029  00000000  00000000  00020088  2**0[m
+                   CONTENTS, READONLY[m
+  12 .comment      00000043  00000000  00000000  000200b1  2**0[m
+                   CONTENTS, READONLY[m
+[31m- 13 .debug_info   0000eb59  00000000  00000000  000200f4  2**0[m
+[32m+[m[32m 13 .debug_info   0000eb7c  00000000  00000000  000200f4  2**0[m
+                   CONTENTS, READONLY, DEBUGGING, OCTETS[m
+[31m- 14 .debug_abbrev 0000325b  00000000  00000000  0002ec4d  2**0[m
+[32m+[m[32m 14 .debug_abb

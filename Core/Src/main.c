@@ -239,7 +239,7 @@ int main(void)
   ds1307_init();
 
 
-  ds1307_config(50, 23, 1, Lun, 18, Marzo, 2025, +3, 00);
+  //ds1307_config(50, 36, 13, Dom, 04, Mayo, 2025, +3, 00);
 
   // Montar el sistema de archivos
   f_mount(&fs, "", 0);
