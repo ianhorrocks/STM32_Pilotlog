@@ -6,9 +6,9 @@
 #include "fatfs.h"
 
 typedef struct {
-    uint32_t id;
-    uint32_t id_aeronave;
-    uint32_t id_usuario;
+	char id[25];
+    char id_embebido[20];
+    char id_usuario[9];
     char tiempo_inicial[20];
     char tiempo_final[20];
     char tiempo_total[20];

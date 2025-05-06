@@ -7,13 +7,13 @@ void writeCSVRecord(FIL* file, TimeRecord* record) {
     // Crear una línea con el nuevo registro
     char write_buffer[100];
     if (f_size(file) == 0) {
-        char header[] = "id,id_aeronave,id_usuario,tiempo_inicial,tiempo_final,tiempo_total\n";
+        char header[] = "id,id_embebido,id_usuario,tiempo_inicial,tiempo_final,tiempo_total\n";
         f_puts(header, file);
     }
-    sprintf(write_buffer, "%lu,%lu,%lu,%s,%s,%s\n",
-            (unsigned long)record->id,
-            (unsigned long)record->id_aeronave,
-            (unsigned long)record->id_usuario,
+    sprintf(write_buffer, "%s,%s,%s,%s,%s,%s\n",
+            record->id,
+            record->id_embebido,
+			record->id_usuario,
             record->tiempo_inicial,
             record->tiempo_final,
             record->tiempo_total);

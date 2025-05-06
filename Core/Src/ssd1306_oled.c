@@ -107,7 +107,7 @@ void SSD1306_DrawBitmap(int16_t x, int16_t y, const unsigned char* bitmap, int16
 uint8_t SSD1306_Init(void)
 {
 	SSD1306_I2C_Init();
-	if(HAL_I2C_IsDeviceReady(&hi2c1, SSD1306_I2C_ADDR, 1, 20000) != HAL_OK){
+	if(HAL_I2C_IsDeviceReady(&hi2c1, SSD1306_I2C_ADDR, 10, 20000) != HAL_OK){
 		return 0;
 	}
 

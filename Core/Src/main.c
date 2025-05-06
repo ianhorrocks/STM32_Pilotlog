@@ -33,11 +33,11 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-/* Definición de estados */
 typedef enum {
     STATE_IDLE,
 	STATE_WAIT_FOR_SECOND_READ
@@ -64,6 +64,7 @@ uint8_t TagType;
 char buf_tx[50];
 //uint8_t existingUID[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08}; // Sustituye esto por tu ID existente
 char time_str[20];
+char datetime_csv_str[25];
 char date_str[20];
 uint32_t record_id = 1;
 
@@ -162,6 +163,18 @@ void DisplayMessage(const char* message) {
     SSD1306_UpdateScreen();
 }
 
+void UpdateCSVDateTimeString() {
+    ds1307_update(&my_rtc);
+    sprintf(datetime_csv_str, "20%02d-%02d-%02d %02d:%02d:%02d",
+            my_rtc.year % 100,
+            my_rtc.month,
+            my_rtc.date,
+            my_rtc.hours,
+            my_rtc.minutes,
+            my_rtc.seconds);
+}
+
+
 int CompareUID(const uint8_t* UID1, const uint8_t* UID2) {
     for (int i = 0; i < 8; i++) {
         if (UID1[i] != UID2[i]) {
@@ -172,20 +185,20 @@ int CompareUID(const uint8_t* UID1, const uint8_t* UID2) {
 }
 
 void CalculateTimeDifference(TimeRecord* record) {
-    // Supon que record.tiempo_inicial y record.tiempo_final están en el formato "HH:MM:SS"
-    // Puedes usar una función para extraer las horas, minutos y segundos de ambas cadenas
+    // Variables para almacenar la hora extraída de los campos
     int initial_hours, initial_minutes, initial_seconds;
     int final_hours, final_minutes, final_seconds;
 
-    sscanf(record->tiempo_inicial, "%d:%d:%d", &initial_hours, &initial_minutes, &initial_seconds);
-    sscanf(record->tiempo_final, "%d:%d:%d", &final_hours, &final_minutes, &final_seconds);
+    // Extraer la hora desde la parte final del string: "YYYY-MM-DD HH:MM:SS"
+    sscanf(record->tiempo_inicial + 11, "%d:%d:%d", &initial_hours, &initial_minutes, &initial_seconds);
+    sscanf(record->tiempo_final + 11, "%d:%d:%d", &final_hours, &final_minutes, &final_seconds);
 
-    // Calcula la diferencia
+    // Calcular diferencia
     int time_difference_hours = final_hours - initial_hours;
     int time_difference_minutes = final_minutes - initial_minutes;
     int time_difference_seconds = final_seconds - initial_seconds;
 
-    // Asegúrate de que los minutos y segundos no sean negativos
+    // Ajuste para negativos
     if (time_difference_seconds < 0) {
         time_difference_seconds += 60;
         time_difference_minutes -= 1;
@@ -195,9 +208,26 @@ void CalculateTimeDifference(TimeRecord* record) {
         time_difference_hours -= 1;
     }
 
-    // Formatea la diferencia en una cadena y guárdala en record.tiempo_total
+    // Guardar resultado
     sprintf(record->tiempo_total, "%02d:%02d:%02d", time_difference_hours, time_difference_minutes, time_difference_seconds);
 }
+
+void generateUniqueId(ds1307_dev_t* rtc, char* output) {
+    ds1307_update(rtc);
+    uint16_t rand_part = rand() % 1000;
+
+    sprintf(output, "20%02d%02d%02d%02d%02d%02d%03d",
+        rtc->year % 100,
+        rtc->month,
+        rtc->date,
+        rtc->hours,
+        rtc->minutes,
+        rtc->seconds,
+        rand_part
+    );
+}
+
+
 
 /* USER CODE END 0 */
 
@@ -239,13 +269,13 @@ int main(void)
   ds1307_init();
 
 
-  //ds1307_config(50, 36, 13, Dom, 04, Mayo, 2025, +3, 00);
+  //ds1307_config(30, 44, 12, Mar, 06, Mayo, 2025, +3, 00);
 
   // Montar el sistema de archivos
   f_mount(&fs, "", 0);
   TimeRecord record;
-  record.id = record_id;
-  record.id_aeronave = 1;
+  generateUniqueId(&my_rtc, record.id);
+  strcpy(record.id_embebido, "AA4K0GH8");
 
   /* USER CODE END 2 */
 
@@ -256,15 +286,25 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+
+
+
 	  switch (current_state) {
 	      case STATE_IDLE:
 	          DisplayIdle();
 	          if (MFRC522_IsCard(&TagType)) {
 	              if (MFRC522_ReadCardSerial((uint8_t*)&UID)) {
-	            	  HAL_Delay(500);
-	                  record.id_usuario = (UID[0] << 24) | (UID[1] << 16) | (UID[2] << 8) | UID[3];
-	                  strcpy(record.tiempo_inicial, time_str);
-	                  DisplayUser(UID, record.tiempo_inicial);
+	                  HAL_Delay(500);
+	                  sprintf(record.id_usuario, "%02X%02X%02X%02X", UID[0], UID[1], UID[2], UID[3]);
+
+	                  generateUniqueId(&my_rtc, record.id);
+
+
+	                  UpdateCSVDateTimeString();
+	                  strcpy(record.tiempo_inicial, datetime_csv_str);
+	                  strcpy(tiempo_inicial, time_str);  // Usado solo en pantalla
+	                  DisplayUser(UID, tiempo_inicial);
 	                  current_state = STATE_WAIT_FOR_SECOND_READ;
 	              }
 	              MFRC522_Halt();
@@ -272,27 +312,29 @@ int main(void)
 	          break;
 
 	      case STATE_WAIT_FOR_SECOND_READ:
-	    	  Display2Case(record.tiempo_inicial);
-	    	  if (MFRC522_IsCard(&TagType)) {
-	    	      if (MFRC522_ReadCardSerial((uint8_t*)&UID)) {
-	    	    	  HAL_Delay(500);
-	    	          strcpy(record.tiempo_final, time_str);
-	    	          CalculateTimeDifference(&record);
-	    	          Display2Case2(record.tiempo_inicial, record.tiempo_final);
-	    	          HAL_Delay(3000);
-	    	          DisplayMessage(record.tiempo_total);
-	    	          HAL_Delay(5000);
-	    	          SSD1306_Clear();
-	    	           if (f_open(&fil, "data.csv", FA_OPEN_ALWAYS | FA_WRITE | FA_READ) == FR_OK) {
-	    	               writeCSVRecord(&fil, &record);
-	    	               f_close(&fil);
-	    	            }
-	    	          current_state = STATE_IDLE;
-	    	       }
-	    	       MFRC522_Halt();
-	    	  }
-	    	  break;
+	          Display2Case(tiempo_inicial);
+	          if (MFRC522_IsCard(&TagType)) {
+	              if (MFRC522_ReadCardSerial((uint8_t*)&UID)) {
+	                  HAL_Delay(500);
+	                  UpdateCSVDateTimeString();
+	                  strcpy(record.tiempo_final, datetime_csv_str);
+	                  CalculateTimeDifference(&record);
+	                  Display2Case2(tiempo_inicial, time_str);
+	                  HAL_Delay(3000);
+	                  DisplayMessage(record.tiempo_total);
+	                  HAL_Delay(5000);
+	                  SSD1306_Clear();
+	                  if (f_open(&fil, "data.csv", FA_OPEN_ALWAYS | FA_WRITE | FA_READ) == FR_OK) {
+	                      writeCSVRecord(&fil, &record);
+	                      f_close(&fil);
+	                  }
+	                  current_state = STATE_IDLE;
+	              }
+	              MFRC522_Halt();
+	          }
+	          break;
 	  }
+
 
   }
 

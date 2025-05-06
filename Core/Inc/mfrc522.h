@@ -98,6 +98,7 @@
 #define     RESERVED33          0x3E
 #define     RESERVED34          0x3F
 
+
 uint8_t MFRC522_Rd(uint8_t address);
 void MFRC522_Wr(uint8_t address, uint8_t value);
 void MFRC522_Reset(void);
