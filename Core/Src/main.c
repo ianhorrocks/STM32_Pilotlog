@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,8 +47,7 @@ typedef enum {
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-FATFS fs; /* File system object structure (FATFS) - para montar la sd*/
-FIL fil; /* File object structure (FIL) - Para crear archivos de texto*/
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -58,114 +58,122 @@ FIL fil; /* File object structure (FIL) - Para crear archivos de texto*/
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-State current_state = STATE_IDLE;
-uint8_t UID[8];
-uint8_t TagType;
-char buf_tx[50];
-//uint8_t existingUID[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08}; // Sustituye esto por tu ID existente
-char time_str[20];
-char datetime_csv_str[25];
-char date_str[20];
-uint32_t record_id = 1;
-
+FATFS fs; /* File system object structure (FATFS) - para montar la sd*/
+FIL fil; /* File object structure (FIL) - Para crear archivos de texto*/
 ds1307_dev_t my_rtc;
-char tiempo_inicial[20];
-
-
+uint8_t UID[8], TagType;
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void DisplayTimeOnly(void);
+void DrawIdleStatic(void);
+void DisplayScan(const char* timestamp, const char* usuario);
+void UpdateCSVDateTimeString(char* out);
+void generateUniqueId(ds1307_dev_t* rtc, char* out);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void DisplayTime() {
+
+void DisplayTimeOnly(void) {
     ds1307_update(&my_rtc);
-    sprintf(date_str, "%02d/%02d/%02d", my_rtc.date, my_rtc.month, my_rtc.year % 100);
-    sprintf(time_str, "%02d:%02d:%02d", my_rtc.hours, my_rtc.minutes, my_rtc.seconds);
-    char date_time_str[30];
-    sprintf(date_time_str, "%s %s", date_str, time_str);
+    char date_str[20], time_str[20], dt[30];
+    sprintf(date_str, "%02d/%02d/%02d",
+            my_rtc.date, my_rtc.month, my_rtc.year % 100);
+    sprintf(time_str, "%02d:%02d:%02d",
+            my_rtc.hours, my_rtc.minutes, my_rtc.seconds);
+    sprintf(dt, "%s %s", date_str, time_str);
+
     SSD1306_GotoXY(5, 1);
-    SSD1306_Puts("                  ", &Font_7x10, BLACK);  // Borra solo la línea de texto
+    SSD1306_Puts("                    ", &Font_7x10, BLACK);
     SSD1306_GotoXY(5, 1);
-    SSD1306_Puts(date_time_str, &Font_7x10, WHITE);
+    SSD1306_Puts((char*)dt, &Font_7x10, WHITE);  // cast para evitar warning
+    SSD1306_UpdateScreen();
 }
 
-
-void DisplayIdle() {
-	ds1307_update(&my_rtc);
-	DisplayTime();
+void DrawIdleStatic(void) {
+    SSD1306_Clear();
+    DisplayTimeOnly();
     SSD1306_GotoXY(0, 25);
-    SSD1306_Puts("ESCANEAR ", &Font_11x18, WHITE);
+    SSD1306_Puts("ESCANEAR", &Font_11x18, WHITE);
     SSD1306_UpdateScreen();
 }
 
-void DisplayUser(const uint8_t* UID, const char* tiempo_inicial) {
+// --- Helper estático: pinta Usuario en medio y Fecha/Hora abajo ---
+static void DrawUserAndDateBelow(const char* timestamp, const char* usuario) {
+    int sfw = Font_7x10.FontWidth;
+    int sfh = Font_7x10.FontHeight;
+    int lfw = Font_11x18.FontWidth;
+    int lfh = Font_11x18.FontHeight;
+
+    // 1) Usuario centrado en Y ≈ 28
+    char usr_line[32];
+    snprintf(usr_line, sizeof(usr_line), "Usuario:%s", usuario);
+    int wus = strlen(usr_line) * sfw;
+    int xus = (SSD1306_WIDTH - wus) / 2;
+    SSD1306_GotoXY(xus, (SSD1306_HEIGHT - sfh) / 2);
+    SSD1306_Puts(usr_line, &Font_7x10, WHITE);
+
+    // 2) Fecha+Hora formateada y centrada en Y = 64 - lfh - 2
+    char dt_disp[16];
+    snprintf(dt_disp, sizeof(dt_disp), "%c%c/%c%c/%c%c %c%c:%c%c",
+             timestamp[8], timestamp[9],
+             timestamp[5], timestamp[6],
+             timestamp[2], timestamp[3],
+             timestamp[11], timestamp[12],
+             timestamp[14], timestamp[15]);
+    int wdt = strlen(dt_disp) * lfw;
+    int xdt = (SSD1306_WIDTH - wdt) / 2;
+    int ydt = SSD1306_HEIGHT - lfh - 2;
+    SSD1306_GotoXY(xdt, ydt);
+    SSD1306_Puts(dt_disp, &Font_11x18, WHITE);
+}
+
+// --- Función principal con restauración ---
+void DisplayScan(const char* timestamp, const char* usuario) {
+    // 1) Limpiar toda la pantalla
     SSD1306_Clear();
-    SSD1306_GotoXY(5, 1);
-    SSD1306_Puts("Tiempo Inicial:", &Font_7x10, WHITE);
-    SSD1306_GotoXY(18, 15);
-    SSD1306_Puts(tiempo_inicial, &Font_11x18, WHITE);
-    SSD1306_GotoXY(25, 36);
-    SSD1306_Puts("BUEN VUELO!", &Font_7x10, WHITE);
-    SSD1306_GotoXY(5, 50);
-    SSD1306_Puts("Usuario:", &Font_7x10, WHITE);
-    sprintf(buf_tx, "%02X%02X%02X%02X", UID[0], UID[1], UID[2], UID[3]);
-    SSD1306_GotoXY(65, 50);
-    SSD1306_Puts(buf_tx, &Font_7x10, WHITE);
+
+    // 2) Pintar la parte fija (usuario + fecha abajo)
+    DrawUserAndDateBelow(timestamp, usuario);
     SSD1306_UpdateScreen();
-    HAL_Delay(3000);
-    SSD1306_Clear();
-}
 
-void Display2Case(const char* tiempo_inicial) {
-	 ds1307_update(&my_rtc);
-	 DisplayTime();
-	 SSD1306_GotoXY(5, 20);
-	 SSD1306_Puts("Inicial:", &Font_7x10, WHITE);
-	 SSD1306_GotoXY(65, 20);
-	 SSD1306_Puts(tiempo_inicial, &Font_7x10, WHITE);
-	 SSD1306_GotoXY(5, 35);
-	 SSD1306_Puts("Final:", &Font_7x10, WHITE);
-	 SSD1306_GotoXY(5, 50);
-	 SSD1306_Puts("Usuario:", &Font_7x10, WHITE);
-	 sprintf(buf_tx, "%02X%02X%02X%02X", UID[0], UID[1], UID[2], UID[3]);
-	 SSD1306_GotoXY(65, 50);
-	 SSD1306_Puts(buf_tx, &Font_7x10, WHITE);
-	 SSD1306_UpdateScreen();
-}
+    // 3) Parámetros de fuente pequeña
+    int sfw = Font_7x10.FontWidth;
+    int sfh = Font_7x10.FontHeight;
 
-void Display2Case2(const char* tiempo_inicial, const char* tiempo_final) {
-	 ds1307_update(&my_rtc);
-	 sprintf(time_str, "%02d:%02d:%02d", my_rtc.hours, my_rtc.minutes, my_rtc.seconds);
-	 DisplayTime(time_str);
-	 SSD1306_GotoXY(5, 20);
-	 SSD1306_Puts("Inicial:", &Font_7x10, WHITE);
-	 SSD1306_GotoXY(65, 20);
-	 SSD1306_Puts(tiempo_inicial, &Font_7x10, WHITE);
-	 SSD1306_GotoXY(5, 35);
-	 SSD1306_Puts("Final:", &Font_7x10, WHITE);
-	 SSD1306_GotoXY(65, 35);
-	 SSD1306_Puts(tiempo_final, &Font_7x10, WHITE);
-	 SSD1306_UpdateScreen();
-}
+    // 4) Animación arriba: "Lectura OK" sobre negro
+    const char* m1 = "Lectura OK";
+    int x1 = (SSD1306_WIDTH - strlen(m1) * sfw) / 2;
+    SSD1306_DrawFilledRectangle(0, 0, SSD1306_WIDTH, sfh, BLACK);
+    SSD1306_GotoXY(x1, 0);
+    SSD1306_Puts((char*)m1, &Font_7x10, WHITE);
+    SSD1306_UpdateScreen();
+    HAL_Delay(1200);
 
-void DisplayMessage(const char* message) {
-    SSD1306_Clear();
-    SSD1306_GotoXY(5, 1);
-    SSD1306_Puts("Tiempo de Vuelo:", &Font_7x10, WHITE);
-    SSD1306_GotoXY(18, 15); // Posición del mensaje en la pantalla
-    SSD1306_Puts(message, &Font_11x18, WHITE);
+    // 5) Animación arriba: "Guardando..." sobre blanco
+    const char* m2 = "Guardando...";
+    int x2 = (SSD1306_WIDTH - strlen(m2) * sfw) / 2;
+    SSD1306_DrawFilledRectangle(0, 0, SSD1306_WIDTH, sfh, WHITE);
+    SSD1306_GotoXY(x2, 0);
+    SSD1306_Puts((char*)m2, &Font_7x10, BLACK);
+    SSD1306_UpdateScreen();
+    HAL_Delay(1200);
+
+    // 6) Restaurar la franja de arriba (fondo negro) y volver a pintar la parte fija
+    SSD1306_DrawFilledRectangle(0, 0, SSD1306_WIDTH, sfh, BLACK);
+    DrawUserAndDateBelow(timestamp, usuario);
     SSD1306_UpdateScreen();
 }
 
-void UpdateCSVDateTimeString() {
+
+void UpdateCSVDateTimeString(char* out) {
     ds1307_update(&my_rtc);
-    sprintf(datetime_csv_str, "20%02d-%02d-%02d %02d:%02d:%02d",
+    sprintf(out, "20%02d-%02d-%02d %02d:%02d:%02d",
             my_rtc.year % 100,
             my_rtc.month,
             my_rtc.date,
@@ -174,56 +182,17 @@ void UpdateCSVDateTimeString() {
             my_rtc.seconds);
 }
 
-
-int CompareUID(const uint8_t* UID1, const uint8_t* UID2) {
-    for (int i = 0; i < 8; i++) {
-        if (UID1[i] != UID2[i]) {
-            return 0; // Los IDs no coinciden
-        }
-    }
-    return 1; // Los IDs coinciden
-}
-
-void CalculateTimeDifference(TimeRecord* record) {
-    // Variables para almacenar la hora extraída de los campos
-    int initial_hours, initial_minutes, initial_seconds;
-    int final_hours, final_minutes, final_seconds;
-
-    // Extraer la hora desde la parte final del string: "YYYY-MM-DD HH:MM:SS"
-    sscanf(record->tiempo_inicial + 11, "%d:%d:%d", &initial_hours, &initial_minutes, &initial_seconds);
-    sscanf(record->tiempo_final + 11, "%d:%d:%d", &final_hours, &final_minutes, &final_seconds);
-
-    // Calcular diferencia
-    int time_difference_hours = final_hours - initial_hours;
-    int time_difference_minutes = final_minutes - initial_minutes;
-    int time_difference_seconds = final_seconds - initial_seconds;
-
-    // Ajuste para negativos
-    if (time_difference_seconds < 0) {
-        time_difference_seconds += 60;
-        time_difference_minutes -= 1;
-    }
-    if (time_difference_minutes < 0) {
-        time_difference_minutes += 60;
-        time_difference_hours -= 1;
-    }
-
-    // Guardar resultado
-    sprintf(record->tiempo_total, "%02d:%02d:%02d", time_difference_hours, time_difference_minutes, time_difference_seconds);
-}
-
-void generateUniqueId(ds1307_dev_t* rtc, char* output) {
+void generateUniqueId(ds1307_dev_t* rtc, char* out) {
     ds1307_update(rtc);
-    uint16_t rand_part = rand() % 1000;
-
-    sprintf(output, "20%02d%02d%02d%02d%02d%02d%03d",
+    uint16_t r = rand() % 1000;
+    sprintf(out, "20%02d%02d%02d%02d%02d%02d%03d",
         rtc->year % 100,
         rtc->month,
         rtc->date,
         rtc->hours,
         rtc->minutes,
         rtc->seconds,
-        rand_part
+        r
     );
 }
 
@@ -273,70 +242,50 @@ int main(void)
 
   // Montar el sistema de archivos
   f_mount(&fs, "", 0);
+  if (f_open(&fil, "data.csv", FA_CREATE_ALWAYS | FA_WRITE) == FR_OK) {
+      f_close(&fil);
+  }
+
+  bool idle_drawn = false;
+  char usuario[9];
   TimeRecord record;
-  generateUniqueId(&my_rtc, record.id);
-  strcpy(record.id_embebido, "AA4K0GH8");
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {
-    /* USER CODE END WHILE */
+      {
+          if (!idle_drawn) {
+              DrawIdleStatic();
+              idle_drawn = true;
+          } else {
+              DisplayTimeOnly();
+          }
 
-    /* USER CODE BEGIN 3 */
+          if (MFRC522_IsCard(&TagType) && MFRC522_ReadCardSerial(UID)) {
+              HAL_Delay(200);
 
+              generateUniqueId(&my_rtc, record.id);
+              strcpy(record.id_embebed, "AA4K0GH8"); // ID EMBEBED DE FABRICA
+              sprintf(record.id_tag, "%02X%02X%02X%02X",
+                      UID[0], UID[1], UID[2], UID[3]);
+              UpdateCSVDateTimeString(record.timestamp);
 
+              sprintf(usuario, "%02X%02X%02X%02X",
+                      UID[0], UID[1], UID[2], UID[3]);
+              DisplayScan(record.timestamp, usuario);
 
+              if (f_open(&fil, "data.csv", FA_OPEN_ALWAYS | FA_WRITE) == FR_OK) {
+                  writeCSVRecord(&fil, &record);
+                  f_close(&fil);
+              }
 
-	  switch (current_state) {
-	      case STATE_IDLE:
-	          DisplayIdle();
-	          if (MFRC522_IsCard(&TagType)) {
-	              if (MFRC522_ReadCardSerial((uint8_t*)&UID)) {
-	                  HAL_Delay(500);
-	                  sprintf(record.id_usuario, "%02X%02X%02X%02X", UID[0], UID[1], UID[2], UID[3]);
-
-	                  generateUniqueId(&my_rtc, record.id);
-
-
-	                  UpdateCSVDateTimeString();
-	                  strcpy(record.tiempo_inicial, datetime_csv_str);
-	                  strcpy(tiempo_inicial, time_str);  // Usado solo en pantalla
-	                  DisplayUser(UID, tiempo_inicial);
-	                  current_state = STATE_WAIT_FOR_SECOND_READ;
-	              }
-	              MFRC522_Halt();
-	          }
-	          break;
-
-	      case STATE_WAIT_FOR_SECOND_READ:
-	          Display2Case(tiempo_inicial);
-	          if (MFRC522_IsCard(&TagType)) {
-	              if (MFRC522_ReadCardSerial((uint8_t*)&UID)) {
-	                  HAL_Delay(500);
-	                  UpdateCSVDateTimeString();
-	                  strcpy(record.tiempo_final, datetime_csv_str);
-	                  CalculateTimeDifference(&record);
-	                  Display2Case2(tiempo_inicial, time_str);
-	                  HAL_Delay(3000);
-	                  DisplayMessage(record.tiempo_total);
-	                  HAL_Delay(5000);
-	                  SSD1306_Clear();
-	                  if (f_open(&fil, "data.csv", FA_OPEN_ALWAYS | FA_WRITE | FA_READ) == FR_OK) {
-	                      writeCSVRecord(&fil, &record);
-	                      f_close(&fil);
-	                  }
-	                  current_state = STATE_IDLE;
-	              }
-	              MFRC522_Halt();
-	          }
-	          break;
-	  }
-
-
-  }
+              idle_drawn = false;
+              SSD1306_Clear();
+              HAL_Delay(200);
+          }
+      }
 
   /* USER CODE END 3 */
 }

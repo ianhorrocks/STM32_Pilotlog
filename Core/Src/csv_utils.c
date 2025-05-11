@@ -1,23 +1,22 @@
-// csv_utils.c
-
 #include "csv_utils.h"
 #include <stdio.h>
 
 void writeCSVRecord(FIL* file, TimeRecord* record) {
-    // Crear una línea con el nuevo registro
-    char write_buffer[100];
+    // 1) Si está vacío, escribimos cabecera
     if (f_size(file) == 0) {
-        char header[] = "id,id_embebido,id_usuario,tiempo_inicial,tiempo_final,tiempo_total\n";
+        const char header[] = "id,id_embebed,id_tag,timestamp\n";
         f_puts(header, file);
     }
-    sprintf(write_buffer, "%s,%s,%s,%s,%s,%s\n",
-            record->id,
-            record->id_embebido,
-			record->id_usuario,
-            record->tiempo_inicial,
-            record->tiempo_final,
-            record->tiempo_total);
 
-    f_lseek(file, f_size(file));  // Ir al final del archivo
-    f_puts(write_buffer, file);
+    // 2) Construimos línea CSV
+    char buf[100];
+    sprintf(buf, "%s,%s,%s,%s\n",
+            record->id,
+            record->id_embebed,
+            record->id_tag,
+            record->timestamp);
+
+    // 3) Vamos al final y escribimos
+    f_lseek(file, f_size(file));
+    f_puts(buf, file);
 }
