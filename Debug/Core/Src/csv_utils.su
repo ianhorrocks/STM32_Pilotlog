@@ -1,1 +1,2 @@
-../Core/Src/csv_utils.c:4:6:writeCSVRecord	168	static
+../Core/Src/csv_utils.c:7:10:crc32	24	static
+../Core/Src/csv_utils.c:18:6:writeCSVRecord	304	static

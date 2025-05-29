@@ -81,12 +81,12 @@ void generateUniqueId(ds1307_dev_t* rtc, char* out);
 
 void DisplayTimeOnly(void) {
     ds1307_update(&my_rtc);
-    char date_str[20], time_str[20], dt[30];
+    char date_str[20], time_str[20], dt[40];
     sprintf(date_str, "%02d/%02d/%02d",
             my_rtc.date, my_rtc.month, my_rtc.year % 100);
     sprintf(time_str, "%02d:%02d:%02d",
             my_rtc.hours, my_rtc.minutes, my_rtc.seconds);
-    sprintf(dt, "%s %s", date_str, time_str);
+    snprintf(dt, sizeof(dt), "%s %s", date_str, time_str);
 
     SSD1306_GotoXY(5, 1);
     SSD1306_Puts("                    ", &Font_7x10, BLACK);
@@ -242,9 +242,6 @@ int main(void)
 
   // Montar el sistema de archivos
   f_mount(&fs, "", 0);
-  if (f_open(&fil, "data.csv", FA_CREATE_ALWAYS | FA_WRITE) == FR_OK) {
-      f_close(&fil);
-  }
 
   bool idle_drawn = false;
   char usuario[9];
